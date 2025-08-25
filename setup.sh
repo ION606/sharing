@@ -5,11 +5,11 @@ PASTE_DOMAIN=bin.ion606.com
 FILES_DOMAIN=tfiles.ion606.com
 SHORT_DOMAIN=s.ion606.com
 
+INITIAL_API_KEY=$(openssl rand -hex 32)
 LUFI_SECRET=$(openssl rand -hex 32)
+
 SHLINK_DB_PASSWORD=$(openssl rand -hex 24)
-SHLINK_GEOLITE_KEY=YOUR_MAXMIND_KEY
 SHLINK_API_KEY=$(openssl rand -hex 32)
 EOF
 
 sudo chmod 644 Caddyfile
-

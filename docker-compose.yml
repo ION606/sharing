@@ -76,7 +76,6 @@ services:
         environment:
             - DEFAULT_DOMAIN=${SHORT_DOMAIN}
             - IS_HTTPS_ENABLED=true
-            - GEOLITE_LICENSE_KEY=${SHLINK_GEOLITE_KEY}
             - DB_DRIVER=postgres
             - DB_HOST=shlink-db
             - DB_NAME=shlink

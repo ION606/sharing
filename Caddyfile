@@ -8,41 +8,42 @@
 
 	@paste host {env.PASTE_DOMAIN}
 	handle @paste {
-		# privatebin ui
 		reverse_proxy privatebin:8080
 	}
 
 	@files host {env.FILES_DOMAIN}
 	handle @files {
-		# lufi ui
 		reverse_proxy lufi:8081
 	}
 
 	@short host {env.SHORT_DOMAIN}
 	handle @short {
-		# shlink ui/api default
 		reverse_proxy shlink:8080
 	}
 
-	# --- adapter endpoint so privatebin can call a simple ?link=... and get a plain-text short url ---
-	# this lives on the same short domain; it just proxies to your tiny bun adapter service
-	@shorten host {env.SHORT_DOMAIN} && path /shorten
+	# adapter endpoint on the short domain
+	@shorten {
+		host {env.SHORT_DOMAIN}
+		path /shorten
+	}
 	handle @shorten {
-		# allow browser calls from your privatebin origin
 		header {
 			Access-Control-Allow-Origin https://{env.PASTE_DOMAIN}
 			Access-Control-Allow-Methods GET, OPTIONS
 			Access-Control-Allow-Headers *
-			# do not cache shortened responses; they contain the full (keyed) url
 			Cache-Control no-store
 		}
-		# forward to the adapter (which turns GET ?link=... into a shlink POST and replies with text)
 		reverse_proxy shlink-adapter:3000
 	}
 
 	# preflight for /shorten
-	@shortenPre host {env.SHORT_DOMAIN} && method OPTIONS && path /shorten
+	@shortenPre {
+		host {env.SHORT_DOMAIN}
+		method OPTIONS
+		path /shorten
+	}
 	respond @shortenPre 204
 
 	respond "unauthorized domain" 404
 }
+
