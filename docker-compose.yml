@@ -1,63 +1,95 @@
 services:
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    command: ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]
-    ports:
-      - "8756:80"
-      - "8757:443"
-    networks:
-      - edge
-    environment:
-      - ACME_AGREE=true
-      - EMAIL=support@ion606.com
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
+    caddy:
+        image: caddy/caddy:2-alpine
+        restart: unless-stopped
+        ports:
+            - "8550:8550"
+        volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile:ro
+            - caddy-data:/data
+        environment:
+            - PASTE_DOMAIN=${PASTE_DOMAIN}
+            - FILES_DOMAIN=${FILES_DOMAIN}
+            - SHORT_DOMAIN=${SHORT_DOMAIN}
+        networks:
+            - proxy
 
-  lufi:
-    image: victorrds/lufi:latest
-    restart: unless-stopped
-    networks:
-      - edge
-    expose:
-      - "8758"
-    volumes:
-      - ./lufi.conf:/etc/lufi.conf:ro
-      - lufi_files:/var/lufi/files
-    labels:
-      - caddy=files.example.com
-      - caddy.reverse_proxy={{upstreams 8758}}
-    security_opt:
-      - no-new-privileges:true
+    privatebin:
+        image: privatebin/nginx-fpm-alpine:stable
+        volumes:
+            - ./privatebin.conf.php:/srv/cfg/conf.php:ro
+            - privatebin-data:/srv/data
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.privatebin.rule=Host(`${PASTE_DOMAIN}`)
+            - traefik.http.routers.privatebin.entrypoints=websecure
+            - traefik.http.routers.privatebin.tls.certresolver=le
+        networks:
+            - proxy
 
-  privatebin:
-    image: privatebin/nginx-fpm-alpine:latest
-    restart: unless-stopped
-    networks:
-      - edge
-    expose:
-      - "8758"
-    volumes:
-      - privatebin_data:/srv/data
-      - ./privatebin.conf.php:/srv/cfg/conf.php:ro
-    labels:
-      - caddy=bin.example.com
-      - caddy.reverse_proxy={{upstreams 8758}}
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
+    lufi:
+        image: xataz/lufi:latest
+        environment:
+            - UID=1000
+            - GID=1000
+            - CONTACT=${ADMIN_EMAIL}
+            - SECRET=${LUFI_SECRET} # 32+ rand chars
+            - DEFAULT_DELAY=7 # days until deletion
+            - MAX_DELAY=30 # max days a user can choose
+            - MAX_FILE_SIZE=250000000 # ~238 MiB; adjust as needed
+            - WEBROOT=/ # served at /
+        volumes:
+            - lufi-data:/usr/lufi/data
+            - lufi-files:/usr/lufi/files
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.lufi.rule=Host(`${FILES_DOMAIN}`)
+            - traefik.http.routers.lufi.entrypoints=websecure
+            - traefik.http.routers.lufi.tls.certresolver=le
+        networks:
+            - proxy
+
+    shlink-db:
+        image: postgres:16-alpine
+        environment:
+            - POSTGRES_DB=shlink
+            - POSTGRES_USER=shlink
+            - POSTGRES_PASSWORD=${SHLINK_DB_PASSWORD}
+        volumes:
+            - shlink-db:/var/lib/postgresql/data
+        networks:
+            - proxy
+
+    shlink:
+        image: shlinkio/shlink:stable
+        depends_on: [shlink-db]
+        environment:
+            - DEFAULT_DOMAIN=${SHORT_DOMAIN}
+            - IS_HTTPS_ENABLED=true
+            - GEOLITE_LICENSE_KEY=${SHLINK_GEOLITE_KEY}
+            - DB_DRIVER=postgres
+            - DB_HOST=shlink-db
+            - DB_NAME=shlink
+            - DB_USER=shlink
+            - DB_PASSWORD=${SHLINK_DB_PASSWORD}
+            - INITIAL_API_KEY=${SHLINK_API_KEY}
+            - SHELL_VERBOSITY=3
+        labels:
+            - traefik.enable=true
+            - traefik.http.services.shlink.loadbalancer.server.port=8080
+            - traefik.http.routers.shlink.rule=Host(`${SHORT_DOMAIN}`)
+            - traefik.http.routers.shlink.entrypoints=websecure
+            - traefik.http.routers.shlink.tls.certresolver=le
+        networks:
+            - proxy
 
 networks:
-  edge:
+    proxy:
+        external: false
 
 volumes:
-  caddy_data:
-  caddy_config:
-  lufi_files:
-  privatebin_data:
-
+    privatebin-data:
+    lufi-data:
+    lufi-files:
+    shlink-db:
+    caddy-data:

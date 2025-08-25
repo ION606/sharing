@@ -1,10 +1,24 @@
-(tempfiles.ion606.com) {
-  encode gzip zstd
-  reverse_proxy lufi:8758
+{
+	# we’re behind cloudflare tunnel; terminate tls there
+	auto_https off
 }
 
-(bin.ion606.com) {
-  encode gzip zstd
-  reverse_proxy privatebin:8758
-}
+:8550 {
+	# route by host header to each backend
+	@paste host {env.PASTE_DOMAIN}
+	handle @paste {
+		reverse_proxy privatebin:8080
+	}
 
+	@files host {env.FILES_DOMAIN}
+	handle @files {
+		reverse_proxy lufi:8081
+	}
+
+	@short host {env.SHORT_DOMAIN}
+	handle @short {
+		reverse_proxy shlink:8080
+	}
+
+	respond "not found" 404
+}
