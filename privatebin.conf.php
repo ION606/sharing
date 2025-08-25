@@ -65,7 +65,10 @@ availabletemplates[] = "bootstrap-compact-page"
 ; (optional) URL shortener address to offer after a new document is created.
 ; It is suggested to only use this with self-hosted shorteners as this will leak
 ; the documents encryption key.
-; urlshortener = "https://shortener.example.com/api?link="
+; in privatebin.conf.php  ([main] section)
+; important: only do this with your self-hosted shortener (see note below)
+
+urlshortener = "https://{env.SHORT_DOMAIN}/shorten?link="
 
 ; (optional) Whether to shorten the URL by default when a new document is created.
 ; If set to true, the "Shorten URL" functionality will be automatically called.

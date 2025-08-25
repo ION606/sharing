@@ -11,6 +11,7 @@ services:
             - PASTE_DOMAIN=${PASTE_DOMAIN}
             - FILES_DOMAIN=${FILES_DOMAIN}
             - SHORT_DOMAIN=${SHORT_DOMAIN}
+            - INITIAL_API_KEY=${INITIAL_API_KEY}
         networks:
             - proxy
 
