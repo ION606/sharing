@@ -1,0 +1,63 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    command: ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]
+    ports:
+      - "8756:80"
+      - "8757:443"
+    networks:
+      - edge
+    environment:
+      - ACME_AGREE=true
+      - EMAIL=support@ion606.com
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+
+  lufi:
+    image: victorrds/lufi:latest
+    restart: unless-stopped
+    networks:
+      - edge
+    expose:
+      - "8758"
+    volumes:
+      - ./lufi.conf:/etc/lufi.conf:ro
+      - lufi_files:/var/lufi/files
+    labels:
+      - caddy=files.example.com
+      - caddy.reverse_proxy={{upstreams 8758}}
+    security_opt:
+      - no-new-privileges:true
+
+  privatebin:
+    image: privatebin/nginx-fpm-alpine:latest
+    restart: unless-stopped
+    networks:
+      - edge
+    expose:
+      - "8758"
+    volumes:
+      - privatebin_data:/srv/data
+      - ./privatebin.conf.php:/srv/cfg/conf.php:ro
+    labels:
+      - caddy=bin.example.com
+      - caddy.reverse_proxy={{upstreams 8758}}
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+
+networks:
+  edge:
+
+volumes:
+  caddy_data:
+  caddy_config:
+  lufi_files:
+  privatebin_data:
+

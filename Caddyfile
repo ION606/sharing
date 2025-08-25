@@ -1,0 +1,10 @@
+(tempfiles.ion606.com) {
+  encode gzip zstd
+  reverse_proxy lufi:8758
+}
+
+(bin.ion606.com) {
+  encode gzip zstd
+  reverse_proxy privatebin:8758
+}
+
