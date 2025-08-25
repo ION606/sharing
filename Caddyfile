@@ -20,5 +20,5 @@
 		reverse_proxy shlink:8080
 	}
 
-	respond "not found" 404
+	respond "unauthorized domain" 404
 }
