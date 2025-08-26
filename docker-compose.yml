@@ -43,6 +43,7 @@ services:
             - MAX_DELAY=30 # max days a user can choose
             - MAX_FILE_SIZE=250000000 # ~238 MiB; adjust as needed
             - WEBROOT=/ # served at /
+            - DISABLE_MAIL_SENDING=1
         volumes:
             - lufi-data:/usr/lufi/data
             - lufi-files:/usr/lufi/files
