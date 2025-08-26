@@ -7,10 +7,12 @@ services:
         volumes:
             - ./Caddyfile:/etc/caddy/Caddyfile:ro,Z
             - caddy-data:/data
+            - ./public:/var/www/share
         environment:
             - PASTE_DOMAIN=${PASTE_DOMAIN}
             - FILES_DOMAIN=${FILES_DOMAIN}
             - SHORT_DOMAIN=${SHORT_DOMAIN}
+            - HOME_DOMAIN=${HOME_DOMAIN}
             - INITIAL_API_KEY=${INITIAL_API_KEY}
         networks:
             - proxy

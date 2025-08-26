@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ION606's sharing hub</title>
+    <meta name="description" content="friendly landing page linking to privatenote and lufi.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <!-- all comments are lower case -->
+    <header class="site-header">
+      <div class="container">
+        <h1 class="brand"><span aria-hidden="true">✨</span> ion606 hub</h1>
+        <p class="tagline">welcome to my privatenote and lufi instances!</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>quick links</h2>
+        <p>pick a destination:</p>
+        <nav class="actions">
+          <a class="btn" data-link="note" href="#" rel="noopener">open privatenote</a>
+          <a class="btn secondary" data-link="drop" href="#" rel="noopener">open lufi</a>
+        </nav>
+        <p class="hint">psst: bookmark this page at <strong id="home-domain">share.ion606.com</strong> for next time.</p>
+      </section>
+
+      <section class="card info">
+        <h3>what are these?</h3>
+        <ul class="bullets">
+          <li><strong>privatenote</strong> is an end-to-end encrypted pastebin for sharing text or code snippets securely.</li>
+          <li><strong>lufi</strong> lets you upload and share files; encryption happens before upload for extra privacy.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p><span id="year"></span> · served by caddy · made with ❤️</p>
+      </div>
+    </footer>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
+
