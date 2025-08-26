@@ -39,6 +39,7 @@ http://{$FILES_DOMAIN}:8550 {
   reverse_proxy http://lufi:8081
 }
 
-http://{$HOMR_DOMAIN} {
-    respond "KFDJSLKFJSLKFJSLKFDJLKDS" 200
+http://{$HOME_DOMAIN}:8550 {
+	root * /var/www/share
+	file_server
 } 

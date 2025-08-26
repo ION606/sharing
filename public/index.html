@@ -3,45 +3,60 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ION606's sharing hub</title>
-    <meta name="description" content="friendly landing page linking to privatenote and lufi.">
+    <title>ION606 — Share Portal</title>
+    <meta name="description" content="ION606 self-hosted Share Portal — quick access to PrivateBin (notes) and LUFI (file drops).">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
-    <!-- all comments are lower case -->
     <header class="site-header">
-      <div class="container">
-        <h1 class="brand"><span aria-hidden="true">✨</span> ion606 hub</h1>
-        <p class="tagline">welcome to my privatenote and lufi instances!</p>
+      <div class="container header-inner">
+        <div class="brand-row">
+          <div class="logo">🔐</div>
+          <div>
+            <h1 class="brand">ION606's Share Portal</h1>
+            <p class="tagline">Self‑hosted privacy tools: encrypted notes & secure file drops</p>
+          </div>
+        </div>
       </div>
     </header>
 
     <main class="container">
-      <section class="card">
-        <h2>quick links</h2>
-        <p>pick a destination:</p>
+      <section class="hero card">
+        <h2 class="hero-title">Private notes • Encrypted file drops</h2>
+        <p class="hero-lead">Quick links to your self‑hosted services. Nothing stored here — just shortcuts to PrivateBin (end‑to‑end encrypted notes) and LUFI (client‑side encrypted file sharing).</p>
+
         <nav class="actions">
-          <a class="btn" data-link="note" href="#" rel="noopener">open privatenote</a>
-          <a class="btn secondary" data-link="drop" href="#" rel="noopener">open lufi</a>
+          <a class="btn" data-link="note" href="#" target="_blank" rel="noopener">Open PrivateBin (notes)</a>
+          <a class="btn" data-link="drop" href="#" target="_blank" rel="noopener">Open LUFI (file drop)</a>
         </nav>
-        <p class="hint">psst: bookmark this page at <strong id="home-domain">share.ion606.com</strong> for next time.</p>
+
+        <p class="hint">Bookmark this page at <a id="home-domain" href="#" target="_blank" rel="noopener"></a></p>
       </section>
 
-      <section class="card info">
-        <h3>what are these?</h3>
-        <ul class="bullets">
-          <li><strong>privatenote</strong> is an end-to-end encrypted pastebin for sharing text or code snippets securely.</li>
-          <li><strong>lufi</strong> lets you upload and share files; encryption happens before upload for extra privacy.</li>
-        </ul>
+      <section class="cards-grid">
+        <article class="card feature">
+          <h3>Why PrivateBin?</h3>
+          <p>End‑to‑end encrypted pastes. Paste content is encrypted in your browser before upload — the server never sees plain text.</p>
+        </article>
+
+        <article class="card feature">
+          <h3>Why LUFI?</h3>
+          <p>Client‑side encrypted file sharing with configurable expiry. Share large files securely without third‑party hosting.</p>
+        </article>
+
+		<article class="card feature">
+		  <h3>Wanna self-host?</h3>
+		  <p>You can view the source code/instructions at <a data-link="github" href="https://github.com/ION606/tempfiles" target="_blank"></a></p>
+		</article>
       </section>
     </main>
 
     <footer class="site-footer">
-      <div class="container">
-        <p><span id="year"></span> · served by caddy · made with ❤️</p>
+      <div class="container footer-inner">
+        <p><span id="year"></span> · served by caddy · ION606</p>
       </div>
     </footer>
 

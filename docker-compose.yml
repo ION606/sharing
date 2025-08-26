@@ -7,7 +7,7 @@ services:
         volumes:
             - ./Caddyfile:/etc/caddy/Caddyfile:ro,Z
             - caddy-data:/data
-            - ./public:/var/www/share
+            - ./public:/var/www/share:ro,Z
         environment:
             - PASTE_DOMAIN=${PASTE_DOMAIN}
             - FILES_DOMAIN=${FILES_DOMAIN}
