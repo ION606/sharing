@@ -18,8 +18,10 @@ services:
     privatebin:
         image: privatebin/nginx-fpm-alpine:stable
         volumes:
-            - ./privatebin.conf.php:/srv/cfg/conf.php
+            - ./privatebin.conf.php:/srv/cfg/conf.php:ro,Z
             - privatebin-data:/srv/data
+        environment:
+            - SHORT_DOMAIN=${SHORT_DOMAIN}
         labels:
             - traefik.enable=true
             - traefik.http.routers.privatebin.rule=Host(`${PASTE_DOMAIN}`)
