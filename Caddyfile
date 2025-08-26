@@ -1,49 +1,41 @@
 {
-	# we’re behind cloudflare tunnel; terminate tls there
-	auto_https off
+  auto_https off
 }
 
-:8550 {
-	# route by host header to each backend
+# short domain (http-only on :8550)
+http://{$SHORT_DOMAIN}:8550 {
+  log {
+    output stdout
+    format console
+  }
 
-	@paste host {env.PASTE_DOMAIN}
-	handle @paste {
-		reverse_proxy privatebin:8080
-	}
+  @shorten path /shorten
+  handle @shorten {
+    header {
+      Access-Control-Allow-Origin https://{$PASTE_DOMAIN}
+      Access-Control-Allow-Methods GET, OPTIONS
+      Access-Control-Allow-Headers *
+      Cache-Control no-store
+    }
+    reverse_proxy http://shlink-adapter:3000
+  }
 
-	@files host {env.FILES_DOMAIN}
-	handle @files {
-		reverse_proxy lufi:8081
-	}
+  @shortenPre method OPTIONS path /shorten
+  respond @shortenPre 204
 
-	@short host {env.SHORT_DOMAIN}
-	handle @short {
-		reverse_proxy shlink:8080
-	}
+  # everything else → shlink ui/api
+  handle {
+    reverse_proxy http://shlink:8080
+  }
+}
 
-	# adapter endpoint on the short domain
-	@shorten {
-		host {env.SHORT_DOMAIN}
-		path /shorten
-	}
-	handle @shorten {
-		header {
-			Access-Control-Allow-Origin https://{env.PASTE_DOMAIN}
-			Access-Control-Allow-Methods GET, OPTIONS
-			Access-Control-Allow-Headers *
-			Cache-Control no-store
-		}
-		reverse_proxy shlink-adapter:3000
-	}
+# paste domain (http-only)
+http://{$PASTE_DOMAIN}:8550 {
+  reverse_proxy http://privatebin:8080
+}
 
-	# preflight for /shorten
-	@shortenPre {
-		host {env.SHORT_DOMAIN}
-		method OPTIONS
-		path /shorten
-	}
-	respond @shortenPre 204
-
-	respond "unauthorized domain" 404
+# files domain (http-only)
+http://{$FILES_DOMAIN}:8550 {
+  reverse_proxy http://lufi:8081
 }
 

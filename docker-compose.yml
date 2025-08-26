@@ -95,9 +95,18 @@ services:
           shlink-db:
             condition: service_healthy
 
+    shlink-adapter:
+      build: ./shlink-adapter
+      restart: unless-stopped
+      environment:
+        SHLINK_BASE: "http://shlink:8080"
+        SHLINK_API_KEY: "${SHLINK_API_KEY}"
+      networks:
+        - proxy 
+
 networks:
     proxy:
-        external: false
+      driver: bridge
 
 volumes:
     privatebin-data:

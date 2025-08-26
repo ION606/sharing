@@ -73,7 +73,7 @@ urlshortener = "https://{env.SHORT_DOMAIN}/shorten?link="
 ; (optional) Whether to shorten the URL by default when a new document is created.
 ; If set to true, the "Shorten URL" functionality will be automatically called.
 ; This only works if the "urlshortener" option is set.
-; shortenbydefault = false
+shortenbydefault = true
 
 ; (optional) Let users create a QR code for sharing the document URL with one click.
 ; It works both when a new document is created and when you view a document.
