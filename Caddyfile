@@ -23,7 +23,7 @@ http://{$SHORT_DOMAIN}:8550 {
   @shortenPre method OPTIONS path /shorten
   respond @shortenPre 204
 
-  # everything else → shlink ui/api
+  # everything else --> shlink ui/api
   handle {
     reverse_proxy http://shlink:8080
   }
